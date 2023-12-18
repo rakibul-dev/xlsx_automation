@@ -1,7 +1,7 @@
 const Redis = require("ioredis");
 const Bull = require("bull");
 
-const Company = require("../models/company_model");
+const insertDataToDb = require("../queries/dbExecutables");
 
 const redisOptions = {
   host: process.env.REDIS_HOST,
@@ -31,7 +31,8 @@ const queue = new Bull("scraper-queue", {
 });
 
 queue.process(async (job) => {
-  console.log("Process job ====>", job.data);
+  insertDataToDb(job);
+  //   console.log("Process job ====>", job.data);
 });
 
 queue.on("error", function (error) {
@@ -71,10 +72,10 @@ queue.on("progress", function (job, progress) {
 });
 
 queue.on("completed", function (job, result) {
-  console.log(
-    " A job successfully completed with a `result`.=============>",
-    job.data
-  );
+  //   console.log(
+  //     " A job successfully completed with a `result`.=============>",
+  //     job.data
+  //   );
   //   await queue.obliterate();
 });
 
